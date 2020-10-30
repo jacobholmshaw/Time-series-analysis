@@ -8,12 +8,12 @@
 ## Section 1: Initial plot ----
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-y <- scan('CumbriaTempMonthly.txt',skip=2,nlines=240)
+y <- scan('CumbriaTempMonthly.txt', skip=2, nlines=240)
 y
-date1 <- seq(2000, 2019+11/12,1/12)
+date1 <- seq(2000, 2019+11/12, 1/12)
 yts <- ts(y[1:216]) #Holding back 24 data values for forecasting.
 date <- seq(2000, 2017+11/12, 1/12) #2017 due to data held back.
-plot(date, yts, main = "Monthly Temperature at Newton Rigg (10% Data Omitted)", type = 'p', col = 2, xlab = "Year",ylab = "Temperature")
+plot(date, yts, main = "Monthly Temperature at Newton Rigg (10% Data Omitted)", type = 'p', col = 2, xlab = "Year", ylab = "Temperature")
 lines(date, yts)
 n <- length(yts)
 time <- seq(1:n)
@@ -78,21 +78,21 @@ lines(date, yfit2, col =4)
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 yres2 <- ymod2$residuals
-ts.plot(ymod2$res, main = "Residuals of harmonic regression") #Small x scale
+ts.plot(ymod2$res, main = "Residuals of harmonic regression") # Small x scale
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Section 7: Periodogram of residuals ----
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 yspec <- spec.pgram(yres2, pad = 4, main = "Raw periodogram of residuals of harmonic regression")
-plot(yspec$freq, yspec$spec, type = 'l', main = "Periodogram of residuals of harmonic regression") #Small x scale again, shows good fit
+plot(yspec$freq, yspec$spec, type = 'l', main = "Periodogram of residuals of harmonic regression") # A small x scale again, which shows good fit.
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Section 8: ACF and PACF of residuals ----
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-acf(yres2, lag.max = 20, main = "ACF of Residuals") #MA(1)?
-pacf(yres2, lag.max = 20, main = "PACF of Residuals", ylim = c(-0.5, 1)) #AR(1)? or AR(4) or AR(5)
+acf(yres2, lag.max = 20, main = "ACF of Residuals") # MA(1)?
+pacf(yres2, lag.max = 20, main = "PACF of Residuals", ylim = c(-0.5, 1))
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Section 9: Ljung-box statistics ----
@@ -112,17 +112,17 @@ abline(h = p.min, col = 4, lty =2) # All below line
 
 ma4fit <- arima(yres2, order = c(0, 0, 4), include.mean = FALSE)
 ma4fit # Standard errors quite large, ar1 is best for this.
-tsdiag(ma4fit) # Higher p values compared to ma3, ar 1 may be better.
+tsdiag(ma4fit) # Higher p values compared to ma3, ar1 may be better.
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Section 11: Residuals ----
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 x <- residuals(ma4fit)
-plot(date, x, main = "Residuals after MA fit") #Looks more like white noise
+plot(date, x, main = "Residuals after MA fit") # Looks more like white noise.
 lines(date, x)
 acf(x, main = "ACF after MA fit", lag.max = 50)
-pacf(x, main = "PACF after MA fit", lag.max = 50) #Both look like white noise
+pacf(x, main = "PACF after MA fit", lag.max = 50) # Both look like white noise.
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Section 12: Ljung-box statistics of residuals ----
@@ -132,9 +132,9 @@ p <- rep(0, 10)
 for (i in 1:10){
   p[i] <- Box.test(x, i, type = "Ljung-Box")$p.value
 }
-p.min <- 0.05 #level of significance
+p.min <- 0.05 # Level of significance.
 plot(p, ylim = c(0, 1), main = "P-values for Ljung-box statistic", xlab = "lag", ylab = "p-value")
-abline(h = p.min, col = 4, lty =2) # All high #note lag 4 on last few plots
+abline(h = p.min, col = 4, lty =2) # All high, note lag 4 on last few plots.
 
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
